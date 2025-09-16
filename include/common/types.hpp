@@ -36,6 +36,7 @@ inline u64 now_ns() noexcept
   return duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count();
 }
 
-// Simple string identifiers are passed as string_view at API boundary to avoid copies yet remain safe.
+// Simple string identifiers are passed as string_view at API boundary to avoid copies yet remain
+// safe.
 using sv = std::string_view;
 } // namespace hft

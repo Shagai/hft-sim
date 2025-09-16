@@ -16,7 +16,8 @@ class OrderBook
   std::map<Price, LevelQueue, std::less<Price>> _asks;       // lowest price first
   std::unordered_map<u64, std::pair<Price, Side>> _id_index; // order_id -> (price, side)
 
-  // Compute total quantity at a level without modifying it. Used when forming top-of-book snapshots.
+  // Compute total quantity at a level without modifying it. Used when forming top-of-book
+  // snapshots.
   static Qty total_qty(const LevelQueue &q) noexcept
   {
     Qty tot = 0;

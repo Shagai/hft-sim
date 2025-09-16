@@ -14,13 +14,13 @@ namespace hft
 // strategies without touching this class.
 class EngineThread
 {
-  OrderBook book_;                                           // shared order book instance
-  spsc::Queue<EngineCommand, 1 << 14> &cmd_in_;              // strategy -> engine commands
-  spsc::Queue<ExecEvent, 1 << 14> &exec_out_;                // exec reports -> strategy
-  spsc::Queue<MarketDataEvent, 1 << 14> &md_out_;            // market data -> strategy
-  Simulator sim_;                                            // generates artificial street flow
-  std::atomic<bool> running_{false};                         // controls lifecycle of the thread
-  std::thread thread_;                                       // actual engine worker thread
+  OrderBook book_;                                // shared order book instance
+  spsc::Queue<EngineCommand, 1 << 14> &cmd_in_;   // strategy -> engine commands
+  spsc::Queue<ExecEvent, 1 << 14> &exec_out_;     // exec reports -> strategy
+  spsc::Queue<MarketDataEvent, 1 << 14> &md_out_; // market data -> strategy
+  Simulator sim_;                                 // generates artificial street flow
+  std::atomic<bool> running_{false};              // controls lifecycle of the thread
+  std::thread thread_;                            // actual engine worker thread
 
 public:
   EngineThread(spsc::Queue<EngineCommand, 1 << 14> &cmd_in,

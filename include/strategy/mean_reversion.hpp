@@ -9,15 +9,15 @@ namespace hft
 // without jumping between declaration/definition files.
 class MeanReversion final : public IStrategy
 {
-  StrategyContext &ctx_;                          // shared counters (order ids, tick size, etc.)
-  RiskManager &risk_;                             // guard rails to avoid runaway quoting
-  spsc::Queue<EngineCommand, 1 << 14> &out_;      // queue into the engine thread
-  std::vector<Price> window_;                     // rolling window storing historical mids
-  std::size_t wlen_;                              // cached window length to avoid repeated size()
-  double dev_ticks_;                              // deviation threshold expressed in ticks
-  Qty quote_qty_;                                 // quantity per quote
-  Price last_bid_{0}, last_ask_{0};               // last prices we quoted (for potential cancels)
-  TopOfBook last_top_{};                          // most recent market snapshot seen
+  StrategyContext &ctx_;                     // shared counters (order ids, tick size, etc.)
+  RiskManager &risk_;                        // guard rails to avoid runaway quoting
+  spsc::Queue<EngineCommand, 1 << 14> &out_; // queue into the engine thread
+  std::vector<Price> window_;                // rolling window storing historical mids
+  std::size_t wlen_;                         // cached window length to avoid repeated size()
+  double dev_ticks_;                         // deviation threshold expressed in ticks
+  Qty quote_qty_;                            // quantity per quote
+  Price last_bid_{0}, last_ask_{0};          // last prices we quoted (for potential cancels)
+  TopOfBook last_top_{};                     // most recent market snapshot seen
 
 public:
   MeanReversion(StrategyContext &ctx, RiskManager &risk, spsc::Queue<EngineCommand, 1 << 14> &out,

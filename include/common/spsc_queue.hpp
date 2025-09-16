@@ -24,8 +24,7 @@ template <typename T, std::size_t CapacityPow2> class Queue
   // Index of the next free slot that the producer will occupy.
   alignas(64) std::atomic<std::size_t> _tail{0};
   // Raw byte storage for the ring buffer slots. Objects are placement-new'ed on demand.
-  alignas(64)
-      std::byte _storage[sizeof(T) * CapacityPow2];
+  alignas(64) std::byte _storage[sizeof(T) * CapacityPow2];
 
   T *slot(std::size_t index) noexcept
   {
@@ -96,7 +95,8 @@ public:
 
   bool empty() const noexcept
   {
-    // Queue is empty when both indices are identical; use acquire to synchronise with opposite side.
+    // Queue is empty when both indices are identical; use acquire to synchronise with opposite
+    // side.
     return _head.load(std::memory_order_acquire) == _tail.load(std::memory_order_acquire);
   }
 

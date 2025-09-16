@@ -79,7 +79,8 @@ public:
     }
     else
     {
-      // Add passive at or near the top. The branch toggles between widening and tightening the spread.
+      // Add passive at or near the top. The branch toggles between widening and tightening the
+      // spread.
       if (make_spread_wider)
       {
         // Place beyond top to widen

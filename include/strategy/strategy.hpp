@@ -12,7 +12,8 @@
 namespace hft
 {
 // Interface for strategies: consume market data and execs, then produce orders back into engine.
-// The goal is to let learners focus on signal logic while the surrounding infrastructure stays small.
+// The goal is to let learners focus on signal logic while the surrounding infrastructure stays
+// small.
 struct StrategyContext
 {
   u64 next_order_id{1}; // per-strategy sequence so orders have unique identifiers
