@@ -12,9 +12,9 @@ using namespace hft;
 // Functional tests using only the simulator. No external deps.
 int main()
 {
-    spsc::Queue<EngineCommand, 1 << 16> cmd_q;
-    spsc::Queue<ExecEvent,     1 << 16> exec_q;
-    spsc::Queue<MarketDataEvent, 1 << 16> md_q;
+    spsc::Queue<EngineCommand, 1 << 14> cmd_q;
+    spsc::Queue<ExecEvent,     1 << 14> exec_q;
+    spsc::Queue<MarketDataEvent, 1 << 14> md_q;
 
     EngineThread engine(cmd_q, exec_q, md_q, StreetFlowConfig{});
     engine.start();

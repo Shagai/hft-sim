@@ -113,7 +113,6 @@ namespace hft
         Qty match(NewOrder aggressive, OnTrade on_trade)
         {
             Qty remaining = aggressive.qty;
-            auto& opp = aggressive.side == Side::Buy ? _asks : _bids;
 
             // Crossing condition helper
             auto crosses = [&](Price opp_price) -> bool {
@@ -121,23 +120,34 @@ namespace hft
                 return aggressive.price <= opp_price;
             };
 
-            for (auto it = opp.begin(); it != opp.end() && remaining > 0 && crosses(it->first); )
-            {
-                auto& q = it->second;
-                while (!q.empty() && remaining > 0)
+            auto walk = [&](auto& side) {
+                for (auto it = side.begin(); it != side.end() && remaining > 0 && crosses(it->first); )
                 {
-                    Order& rest = q.front();
-                    const Qty traded = (remaining < rest.qty) ? remaining : rest.qty;
-                    on_trade(it->first, traded, rest);
-                    rest.qty -= traded;
-                    remaining -= traded;
-                    if (rest.qty == 0)
+                    auto& q = it->second;
+                    while (!q.empty() && remaining > 0)
                     {
-                        _id_index.erase(rest.order_id);
-                        q.pop_front();
+                        Order& rest = q.front();
+                        const Qty traded = (remaining < rest.qty) ? remaining : rest.qty;
+                        on_trade(it->first, traded, rest);
+                        rest.qty -= traded;
+                        remaining -= traded;
+                        if (rest.qty == 0)
+                        {
+                            _id_index.erase(rest.order_id);
+                            q.pop_front();
+                        }
                     }
+                    if (q.empty()) it = side.erase(it); else ++it;
                 }
-                if (q.empty()) it = opp.erase(it); else ++it;
+            };
+
+            if (aggressive.side == Side::Buy)
+            {
+                walk(_asks);
+            }
+            else
+            {
+                walk(_bids);
             }
             return remaining;
         }

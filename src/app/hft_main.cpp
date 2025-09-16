@@ -14,9 +14,9 @@ using namespace hft;
 int main()
 {
     // Queues: strategy -> engine, engine -> strategy (execs), engine -> strategy (market data)
-    spsc::Queue<EngineCommand, 1 << 16> cmd_q;
-    spsc::Queue<ExecEvent,     1 << 16> exec_q;
-    spsc::Queue<MarketDataEvent, 1 << 16> md_q;
+    spsc::Queue<EngineCommand, 1 << 14> cmd_q;
+    spsc::Queue<ExecEvent,     1 << 14> exec_q;
+    spsc::Queue<MarketDataEvent, 1 << 14> md_q;
 
     // Start engine + simulator
     EngineThread engine(cmd_q, exec_q, md_q, StreetFlowConfig{});

@@ -79,6 +79,7 @@ namespace hft
             // First match against opposite side.
             Qty remaining = _book.match(n, [&](Price px, Qty q, const Order& resting) {
                 ExecEvent trade{};
+                (void)resting; // resting details currently unused but kept for future hooks
                 trade.type = ExecType::Trade;
                 trade.order_id = n.order_id;
                 trade.user_id = n.user_id;
