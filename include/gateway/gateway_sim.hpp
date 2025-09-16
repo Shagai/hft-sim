@@ -1,4 +1,5 @@
 #pragma once
+
 #include "common/logging.hpp"
 #include "common/spsc_queue.hpp"
 #include "market/matching_engine.hpp"

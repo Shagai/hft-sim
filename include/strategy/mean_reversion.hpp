@@ -1,4 +1,5 @@
 #pragma once
+
 #include "strategy.hpp"
 
 namespace hft

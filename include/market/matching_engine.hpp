@@ -1,4 +1,5 @@
 #pragma once
+
 #include "common/spsc_queue.hpp"
 #include "market_data.hpp"
 #include "order_book.hpp"

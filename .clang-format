@@ -11,3 +11,6 @@ IncludeCategories:
   - Regex: '^<'
     Priority: 2
 IncludeIsMainRegex: '([-_](test|unittest))?$'
+KeepEmptyLines:
+  AtStartOfFile: true
+  AtStartOfBlock: true
