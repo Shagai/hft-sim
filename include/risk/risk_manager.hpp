@@ -1,6 +1,7 @@
 #pragma once
-#include <atomic>
 #include "market/order.hpp"
+
+#include <atomic>
 
 namespace hft
 {

@@ -1,8 +1,9 @@
+#include "common/logging.hpp"
+#include "common/spsc_queue.hpp"
+#include "gateway/gateway_sim.hpp"
+
 #include <cstdio>
 #include <thread>
-#include "gateway/gateway_sim.hpp"
-#include "common/spsc_queue.hpp"
-#include "common/logging.hpp"
 
 using namespace hft;
 

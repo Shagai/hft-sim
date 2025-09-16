@@ -1,9 +1,10 @@
 #pragma once
+#include "common/logging.hpp"
+#include "matching_engine.hpp"
+
+#include <atomic>
 #include <random>
 #include <thread>
-#include <atomic>
-#include "matching_engine.hpp"
-#include "common/logging.hpp"
 
 namespace hft
 {

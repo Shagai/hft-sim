@@ -1,11 +1,12 @@
+#include "common/logging.hpp"
+#include "gateway/gateway_sim.hpp"
+#include "risk/risk_manager.hpp"
+#include "strategy/mean_reversion.hpp"
+
 #include <cassert>
 #include <cstdio>
 #include <thread>
 #include <vector>
-#include "gateway/gateway_sim.hpp"
-#include "strategy/mean_reversion.hpp"
-#include "risk/risk_manager.hpp"
-#include "common/logging.hpp"
 
 using namespace hft;
 

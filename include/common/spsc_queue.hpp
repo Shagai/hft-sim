@@ -1,8 +1,8 @@
 #pragma once
 #include <atomic>
 #include <cstddef>
-#include <type_traits>
 #include <new>
+#include <type_traits>
 
 // Lock-free single-producer/single-consumer (SPSC) ring buffer with power-of-two capacity.
 //   * No heap interaction: items are constructed in place inside `_storage` and destroyed manually.

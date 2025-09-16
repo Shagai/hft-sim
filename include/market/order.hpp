@@ -1,9 +1,10 @@
 #pragma once
-#include <cstdint>
-#include <unordered_map>
-#include <map>
-#include <deque>
 #include "common/types.hpp"
+
+#include <cstdint>
+#include <deque>
+#include <map>
+#include <unordered_map>
 
 namespace hft
 {

@@ -1,8 +1,9 @@
 #pragma once
-#include <cstdio>
+#include "types.hpp"
+
 #include <cstdarg>
 #include <cstdint>
-#include "types.hpp"
+#include <cstdio>
 
 namespace hft
 {

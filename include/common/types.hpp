@@ -1,7 +1,7 @@
 #pragma once
+#include <chrono>
 #include <cstdint>
 #include <string_view>
-#include <chrono>
 
 // Fundamental types kept small and POD to encourage cache-friendly code.
 // The intent is to make units explicit (Price vs Qty) while keeping storage trivial.

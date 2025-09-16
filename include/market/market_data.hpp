@@ -1,6 +1,7 @@
 #pragma once
-#include <variant>
 #include "order.hpp"
+
+#include <variant>
 
 namespace hft
 {

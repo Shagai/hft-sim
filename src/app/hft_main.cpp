@@ -1,13 +1,14 @@
-#include <thread>
-#include <atomic>
-#include <cstdio>
+#include "common/logging.hpp"
 #include "common/spsc_queue.hpp"
+#include "gateway/gateway_sim.hpp"
 #include "market/market_data.hpp"
 #include "market/matching_engine.hpp"
-#include "gateway/gateway_sim.hpp"
-#include "strategy/mean_reversion.hpp"
 #include "risk/risk_manager.hpp"
-#include "common/logging.hpp"
+#include "strategy/mean_reversion.hpp"
+
+#include <atomic>
+#include <cstdio>
+#include <thread>
 
 using namespace hft;
 

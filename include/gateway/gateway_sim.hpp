@@ -1,10 +1,11 @@
 #pragma once
-#include <thread>
-#include <atomic>
+#include "common/logging.hpp"
+#include "common/spsc_queue.hpp"
 #include "market/matching_engine.hpp"
 #include "market/simulator.hpp"
-#include "common/spsc_queue.hpp"
-#include "common/logging.hpp"
+
+#include <atomic>
+#include <thread>
 
 namespace hft
 {

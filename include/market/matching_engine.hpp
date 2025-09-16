@@ -1,8 +1,9 @@
 #pragma once
-#include <functional>
-#include "order_book.hpp"
-#include "market_data.hpp"
 #include "common/spsc_queue.hpp"
+#include "market_data.hpp"
+#include "order_book.hpp"
+
+#include <functional>
 
 namespace hft
 {

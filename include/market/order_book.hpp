@@ -1,8 +1,9 @@
 #pragma once
-#include <map>
-#include <deque>
-#include <unordered_map>
 #include "order.hpp"
+
+#include <deque>
+#include <map>
+#include <unordered_map>
 
 // A simple price-time priority order book using std::map for clarity.
 // Each price level owns a deque of resting orders to preserve FIFO priority.
