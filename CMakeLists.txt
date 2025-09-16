@@ -43,7 +43,7 @@ if(HFT_ENABLE_LTO AND CMAKE_BUILD_TYPE MATCHES "Release")
   endif()
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Library target with core components (header-only where possible)
 add_library(hft_core STATIC
@@ -53,7 +53,7 @@ add_library(hft_core STATIC
     src/risk/risk_manager.cpp
     src/gateway/gateway_sim.cpp
 )
-target_include_directories(hft_core PUBLIC src)
+target_include_directories(hft_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 if(NOT MSVC)
   target_link_libraries(hft_core PRIVATE pthread)
 endif()
