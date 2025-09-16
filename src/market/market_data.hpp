@@ -4,5 +4,5 @@
 
 namespace hft
 {
-    using MarketDataEvent = std::variant<TopOfBook, TradePrint>;
+using MarketDataEvent = std::variant<TopOfBook, TradePrint>;
 } // namespace hft
