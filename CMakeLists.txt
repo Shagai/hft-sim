@@ -46,16 +46,10 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Library target with core components (header-only where possible)
-add_library(hft_core STATIC
-    src/market/matching_engine.cpp
-    src/market/simulator.cpp
-    src/strategy/mean_reversion.cpp
-    src/risk/risk_manager.cpp
-    src/gateway/gateway_sim.cpp
-)
-target_include_directories(hft_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_library(hft_core INTERFACE)
+target_include_directories(hft_core INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 if(NOT MSVC)
-  target_link_libraries(hft_core PRIVATE pthread)
+  target_link_libraries(hft_core INTERFACE pthread)
 endif()
 
 # Executables
@@ -70,7 +64,7 @@ target_link_libraries(sim_scenarios PRIVATE hft_core)
 
 # Nice defaults for faster local iteration
 if(MSVC)
-  target_compile_options(hft_core PRIVATE /MP)
+  target_compile_options(hft_core INTERFACE /MP)
   target_compile_options(hft_app PRIVATE /MP)
   target_compile_options(sim_app PRIVATE /MP)
   target_compile_options(sim_scenarios PRIVATE /MP)
