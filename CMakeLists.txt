@@ -115,16 +115,19 @@ if(HFT_ENABLE_COVERAGE AND NOT MSVC)
               --root ${CMAKE_SOURCE_DIR}
               --object-directory ${CMAKE_BINARY_DIR}
               --exclude "${CMAKE_SOURCE_DIR}/tests/functional.*"
+              --exclude "${CMAKE_SOURCE_DIR}/build/.*"
               --xml ${COVERAGE_OUTPUT_DIR}/coverage.xml
       COMMAND ${GCOVR_EXECUTABLE}
               --root ${CMAKE_SOURCE_DIR}
               --object-directory ${CMAKE_BINARY_DIR}
               --exclude "${CMAKE_SOURCE_DIR}/tests/functional.*"
+              --exclude "${CMAKE_SOURCE_DIR}/build/.*"
               --html --html-details ${COVERAGE_OUTPUT_DIR}/index.html
       COMMAND ${GCOVR_EXECUTABLE}
               --root ${CMAKE_SOURCE_DIR}
               --object-directory ${CMAKE_BINARY_DIR}
               --exclude "${CMAKE_SOURCE_DIR}/tests/functional.*"
+              --exclude "${CMAKE_SOURCE_DIR}/build/.*"
               --txt ${COVERAGE_OUTPUT_DIR}/summary.txt
       COMMENT "Generating gcovr coverage report"
       VERBATIM)
