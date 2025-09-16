@@ -2,47 +2,53 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  build-test-format:
+  build-test-cover:
     runs-on: ubuntu-latest
-    env:
-      CMAKE_BUILD_TYPE: Release
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up CMake
-        uses: lukka/get-cmake@v3.28.3
-        with:
-          cmake-version: 3.27.7
-
-      - name: Install build dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++-13 wget software-properties-common gnupg
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 20
-          sudo apt-get install -y clang-format-20
+          sudo apt-get install -y ninja-build gcovr
 
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DCMAKE_CXX_COMPILER=g++-13
+        run: |
+          cmake -S . -B build -G Ninja \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -DHFT_BUILD_TESTS=ON \
+                -DHFT_ENABLE_COVERAGE=ON
 
       - name: Build
-        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }}
+        run: cmake --build build
 
-      - name: Run simulator scenarios
-        run: ./build/sim_scenarios
+      - name: Run unit tests
+        run: ctest --output-on-failure --test-dir build
 
-      - name: Clang-Format Check
+      - name: Generate coverage report
+        run: cmake --build build --target coverage
+
+      - name: Publish coverage summary
+        if: always()
         run: |
-          set -euo pipefail
-          mapfile -t files < <(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hh' '*.hpp')
-          if [ "${#files[@]}" -gt 0 ]; then
-            clang-format-20 --dry-run --Werror "${files[@]}"
+          if [ -f build/coverage/summary.txt ]; then
+            echo '### Coverage Summary' >> "$GITHUB_STEP_SUMMARY"
+            cat build/coverage/summary.txt >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "No files to check."
+            echo 'Coverage summary not found' >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build/coverage/
+          if-no-files-found: warn

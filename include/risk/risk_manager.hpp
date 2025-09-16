@@ -23,6 +23,16 @@ public:
   {
   }
 
+  i64 position() const noexcept
+  {
+    return position_.load(std::memory_order_relaxed);
+  }
+
+  i64 notional() const noexcept
+  {
+    return notional_.load(std::memory_order_relaxed);
+  }
+
   bool can_quote(Qty q) const noexcept
   {
     return q <= max_order_qty_ &&

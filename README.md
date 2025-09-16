@@ -26,6 +26,30 @@ Run:
 ./sim_scenarios
 ```
 
+## Tests & Coverage
+
+Unit tests live under `tests/unit` and rely on GoogleTest/GoogleMock. CMake downloads the
+dependency on the first configure step; make sure outbound HTTPS to `github.com` is available or
+pre-populate `build/_deps` with a mirror.
+
+```bash
+mkdir -p build && cd build
+cmake -DHFT_BUILD_TESTS=ON ..
+cmake --build . -j
+ctest --output-on-failure
+```
+
+Enable coverage instrumentation with GCC or Clang by passing `-DHFT_ENABLE_COVERAGE=ON` (Debug
+builds work best) and install `gcovr`.
+
+```bash
+cmake -DCMAKE_BUILD_TYPE=Debug -DHFT_BUILD_TESTS=ON -DHFT_ENABLE_COVERAGE=ON ..
+cmake --build . --target coverage
+```
+
+Reports are written to `build/coverage/` (`index.html`, `coverage.xml`, and `summary.txt`) and are
+suitable for local browsing or CI uploads.
+
 ## Architecture
 
 - **common/spsc_queue.hpp**: lock-free SPSC ring buffer (power-of-two capacity). No dynamic allocation on hot path.
