@@ -8,7 +8,8 @@
 namespace hft
 {
 // A tiny exchange simulator that injects random "street" flow to keep the book alive.
-// It runs inside the engine thread to avoid multi-producer queues.
+// It runs directly inside the engine thread to avoid dealing with multiple producers on queues.
+// The goal is pedagogical: expose how external flow alters the book while keeping code compact.
 struct StreetFlowConfig
 {
   Price mid{10'000}; // ticks
@@ -62,7 +63,7 @@ public:
 
     if (move_mid)
     {
-      // Marketable order to move mid by one tick.
+      // Marketable order to move mid by one tick. Splitting the branch keeps both sides symmetric.
       if (std::uniform_int_distribution<int>(0, 1)(rng_) == 0)
       {
         // lift ask
@@ -78,7 +79,7 @@ public:
     }
     else
     {
-      // Add passive at or near the top.
+      // Add passive at or near the top. The branch toggles between widening and tightening the spread.
       if (make_spread_wider)
       {
         // Place beyond top to widen

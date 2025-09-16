@@ -5,10 +5,12 @@
 namespace hft
 {
 // Basic per-strategy risk limits: max position, max notional, and per-order size.
+// The implementation is intentionally compact so learners can focus on how risk gating integrates
+// with strategy callbacks. In a production system this would be vastly richer.
 class RiskManager
 {
-  std::atomic<i64> position_{0}; // signed lots
-  std::atomic<i64> notional_{0}; // sum(|price*qty|); simplistic
+  std::atomic<i64> position_{0}; // signed lots carried across exec events
+  std::atomic<i64> notional_{0}; // sum(|price*qty|); keeps track of gross exposure
   i64 max_position_;
   i64 max_notional_;
   Qty max_order_qty_;
@@ -31,7 +33,8 @@ public:
       return;
     const i64 dir = (e.filled > 0) ? 1 : 0; // qty is always > 0; direction from context below
     (void)dir;                              // not used in this simplified example
-    // Here we only track notional. A real model would track per-symbol limits and side.
+    // Here we only track total traded notional. A real model would track per-symbol limits, side,
+    // and integrate with a position service. Keeping it scalar emphasises the mechanics.
     notional_.fetch_add(static_cast<i64>(std::llabs(static_cast<long long>(e.price) * e.filled)),
                         std::memory_order_relaxed);
     // You can update position by listening to side; omitted for brevity.

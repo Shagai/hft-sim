@@ -5,8 +5,8 @@
 #include "order.hpp"
 
 // A simple price-time priority order book using std::map for clarity.
-// This is not the fastest approach. It is fine for a simulator and tests.
-// Replace with a flat array-of-levels structure when optimizing.
+// Each price level owns a deque of resting orders to preserve FIFO priority.
+// This data structure emphasises readability; production engines rely on custom lock-free pools.
 namespace hft
 {
 class OrderBook
@@ -16,6 +16,7 @@ class OrderBook
   std::map<Price, LevelQueue, std::less<Price>> _asks;       // lowest price first
   std::unordered_map<u64, std::pair<Price, Side>> _id_index; // order_id -> (price, side)
 
+  // Compute total quantity at a level without modifying it. Used when forming top-of-book snapshots.
   static Qty total_qty(const LevelQueue &q) noexcept
   {
     Qty tot = 0;
@@ -27,6 +28,7 @@ class OrderBook
 public:
   TopOfBook top() const noexcept
   {
+    // Build a TopOfBook by looking at best bid/ask levels. If any side is empty we leave zeros.
     TopOfBook t{};
     if (!_bids.empty())
     {
@@ -50,6 +52,7 @@ public:
   // Insert a new passive order into the book at given price.
   void add_passive(const NewOrder &n)
   {
+    // Convert the immutable NewOrder into a mutable resting Order entry.
     Order o{n.order_id, n.user_id, n.side, n.price, n.qty, n.ts_ns};
     if (n.side == Side::Buy)
     {
@@ -137,6 +140,7 @@ public:
         {
           Order &rest = q.front();
           const Qty traded = (remaining < rest.qty) ? remaining : rest.qty;
+          // Notify the caller about the trade so it can produce exec/print messages.
           on_trade(it->first, traded, rest);
           rest.qty -= traded;
           remaining -= traded;

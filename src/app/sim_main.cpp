@@ -7,7 +7,7 @@
 using namespace hft;
 
 // This executable runs only the engine + simulator without any strategy.
-// It lets you profile matching and data emission in isolation.
+// Handy for profiling the matching engine and simulator in isolation or for unit tests.
 int main()
 {
   spsc::Queue<EngineCommand, 1 << 14> cmd_q;
@@ -17,6 +17,7 @@ int main()
   EngineThread engine(cmd_q, exec_q, md_q, StreetFlowConfig{});
   engine.start();
 
+  // Let the simulator churn for a few seconds.
   std::this_thread::sleep_for(std::chrono::seconds(3));
 
   engine.stop();

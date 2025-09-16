@@ -6,7 +6,7 @@
 
 namespace hft
 {
-// Commands from strategy into engine thread.
+// Commands from strategy into engine thread. Each message is handled synchronously by the engine.
 struct EngineCommand
 {
   enum class Kind : u8
@@ -19,6 +19,8 @@ struct EngineCommand
 };
 
 // MatchingEngine owns an OrderBook and emits ExecEvents and MarketDataEvents.
+// It is intentionally single-threaded: one engine thread reads commands from a queue and calls
+// `on_command`. Callers supply SPSC queues for outputs so we keep lock-free semantics end-to-end.
 class MatchingEngine
 {
   OrderBook &_book;
@@ -53,6 +55,7 @@ private:
     _md_out.push(MarketDataEvent{t});
   }
 
+  // Exec events are small enough to pass by value. SPSC queue avoids heap allocations here.
   void send_exec(ExecEvent e)
   {
     _exec_out.push(e);
@@ -79,6 +82,7 @@ private:
     publish_top();
   }
 
+  // Core matching loop. Accepts new order, executes against opposite side, then handles residue.
   void handle_new(NewOrder n)
   {
     n.ts_ns = n.ts_ns ? n.ts_ns : now_ns();

@@ -14,6 +14,7 @@ using namespace hft;
 int main()
 {
   // Queues: strategy -> engine, engine -> strategy (execs), engine -> strategy (market data)
+  // Each queue is a single-producer/single-consumer ring buffer defined in src/common.
   spsc::Queue<EngineCommand, 1 << 14> cmd_q;
   spsc::Queue<ExecEvent, 1 << 14> exec_q;
   spsc::Queue<MarketDataEvent, 1 << 14> md_q;
@@ -28,6 +29,8 @@ int main()
   ctx.next_order_id = 1;
   ctx.tick = 1;
 
+  // Risk parameters are intentionally generous so the sample strategy spends more time trading
+  // and less time being throttled.
   RiskManager risk(/*max_position*/ 100, /*max_notional*/ 1'000'000, /*max_order_qty*/ 10);
   MeanReversion strat(ctx, risk, cmd_q, /*window_len*/ 64, /*dev_ticks*/ 2.0, /*quote_qty*/ 2);
 
@@ -41,7 +44,7 @@ int main()
         while (running.load(std::memory_order_acquire))
         {
           while (exec_q.pop(e))
-            strat.on_exec(e);
+            strat.on_exec(e); // feed fills/rejections into strategy state
           std::this_thread::sleep_for(std::chrono::microseconds(50));
         }
       });
@@ -54,8 +57,8 @@ int main()
         while (running.load(std::memory_order_acquire))
         {
           while (md_q.pop(ev))
-            strat.on_market_data(ev);
-          strat.on_timer(now_ns());
+            strat.on_market_data(ev); // update rolling statistics with latest book/prints
+          strat.on_timer(now_ns());   // periodic callback that decides when to quote
           std::this_thread::sleep_for(std::chrono::microseconds(200));
         }
       });
@@ -68,6 +71,6 @@ int main()
   md_thread.join();
   engine.stop();
 
-  HFT_INFO("Done.");
+  HFT_INFO("Done."); // final log to confirm clean shutdown
   return 0;
 }

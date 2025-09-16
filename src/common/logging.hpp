@@ -6,8 +6,9 @@
 
 namespace hft
 {
-// Very small logging helper. Avoids iostreams for lower overhead.
-// In real HFT you would batch logs or write to per-thread ring buffers.
+// Very small logging helper. Avoids iostreams for lower overhead and less hidden locks.
+// Designed for educational purposes: it keeps formatting familiar while staying close to C APIs.
+// Serious deployments would push logs into per-thread buffers and write asynchronously.
 inline void log(const char *lvl, const char *fmt, ...) noexcept
 {
   std::va_list args;
@@ -19,7 +20,8 @@ inline void log(const char *lvl, const char *fmt, ...) noexcept
   std::fputc('\n', stderr);
   va_end(args);
 }
-
+// Convenience macros to match typical logging ergonomics (INFO/WARN/ERROR).
+// They expand to simple printf-style calls keeping call sites compact.
 #define HFT_INFO(fmt, ...) ::hft::log("INFO", fmt, ##__VA_ARGS__)
 #define HFT_WARN(fmt, ...) ::hft::log("WARN", fmt, ##__VA_ARGS__)
 #define HFT_ERROR(fmt, ...) ::hft::log("ERROR", fmt, ##__VA_ARGS__)
