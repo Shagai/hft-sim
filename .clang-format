@@ -13,4 +13,3 @@ IncludeCategories:
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 KeepEmptyLines:
   AtStartOfFile: true
-  AtStartOfBlock: true
