@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build-test-format:
+    runs-on: ubuntu-latest
+    env:
+      CMAKE_BUILD_TYPE: Release
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@v3
+        with:
+          cmake-version: 3.27.7
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-13 clang-format-17
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DCMAKE_CXX_COMPILER=g++-13
+
+      - name: Build
+        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }}
+
+      - name: Run simulator scenarios
+        run: ./build/sim_scenarios
+
+      - name: Clang-Format Check
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hh' '*.hpp')
+          if [ "${#files[@]}" -gt 0 ]; then
+            clang-format-17 --dry-run --Werror "${files[@]}"
+          else
+            echo "No files to check."
+          fi
